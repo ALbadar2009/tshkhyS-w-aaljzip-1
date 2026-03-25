@@ -238,6 +238,31 @@ export default function App() {
         </div>
       </header>
 
+      {/* Hero text – shown only on main view, right below header */}
+      <AnimatePresence>
+        {view === "main" && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="max-w-4xl mx-auto px-4 md:px-8 pb-2 relative z-10 text-right space-y-2"
+          >
+            <span
+              className="inline-block px-4 py-1.5 rounded-full text-xs font-bold tracking-widest"
+              style={{ backgroundColor: "rgba(90,90,64,0.10)", color: "#5A5A40" }}
+            >
+              مستقبلك الزراعي يبدأ هنا
+            </span>
+            <h2 className="text-2xl md:text-3xl naskh font-bold leading-tight" style={{ color: "#1a1a1a" }}>
+              شخّص الإصابة بلمسة واحدة
+            </h2>
+            <p className="text-sm leading-relaxed opacity-60" style={{ color: "#1a1a1a" }}>
+              التقط صورة للنبات المصاب وسيقوم الذكاء الاصطناعي بتحليل الحالة وتقديم خطة علاجية فورية
+            </p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <main className="max-w-4xl mx-auto px-4 md:px-6 pb-24 relative z-10">
         <AnimatePresence mode="wait">
 
@@ -251,23 +276,6 @@ export default function App() {
               className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center py-6"
             >
               <div className="space-y-6 text-right order-2 lg:order-1">
-                <div className="space-y-4">
-                  <motion.span
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    className="inline-block px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest"
-                    style={{ backgroundColor: "rgba(90,90,64,0.10)", color: "#5A5A40" }}
-                  >
-                    مستقبلك الزراعي يبدأ هنا
-                  </motion.span>
-                  <h2 className="text-3xl md:text-4xl naskh font-bold leading-tight" style={{ color: "#1a1a1a" }}>
-                    شخّص الإصابة بلمسة واحدة
-                  </h2>
-                  <p className="text-base leading-relaxed opacity-60" style={{ color: "#1a1a1a" }}>
-                    التقط صورة للنبات المصاب وسيقوم الذكاء الاصطناعي بتحليل الحالة وتقديم خطة علاجية فورية
-                  </p>
-                </div>
-
                 <div className="grid grid-cols-3 gap-4">
                   {[
                     { icon: Camera, label: "التقط صورة", desc: "بكاميرا هاتفك" },
