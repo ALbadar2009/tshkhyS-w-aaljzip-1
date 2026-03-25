@@ -1,6 +1,6 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
-import { GoogleGenAI, Type, ThinkingLevel } from "@google/genai";
+import { GoogleGenAI } from "@google/genai";
 
 const ai = new GoogleGenAI({
   apiKey: process.env.AI_INTEGRATIONS_GEMINI_API_KEY,
@@ -21,76 +21,67 @@ export async function registerRoutes(
         return res.status(400).json({ message: "imageBase64 is required" });
       }
 
-      const model = "gemini-3-flash-preview";
-
       const prompt = `
-        Analyze this image of a plant. 
-        Identify the plant and any visible diseases, pests, or nutrient deficiencies.
-        
-        CRITICAL: All text in the response MUST be in Arabic. 
-        - plantName: Arabic name of the plant.
-        - diseaseName: Arabic name of the disease or pest.
-        - diseaseType: Arabic classification (e.g., فطري, بكتيري, حشري, نقص عناصر).
-        - symptoms: List of symptoms in Arabic.
-        - treatmentPlan: All treatment details in Arabic.
-        - timing: All timing details in Arabic.
-        - prevention: All prevention measures in Arabic.
+        أنت خبير زراعي متخصص في تشخيص أمراض النباتات.
+        قم بتحليل هذه الصورة للنبات وحدد:
+        1. اسم النبات
+        2. المرض أو الآفة إن وجدت
+        3. نوع الإصابة
+        4. الأعراض المرئية
+        5. خطة العلاج
+        6. التوقيت المناسب للعلاج
+        7. إرشادات الوقاية
 
-        Return the result in JSON format matching the schema.
+        أجب فقط بـ JSON بالعربية بالتنسيق التالي بالضبط (لا تضف أي نص خارج JSON):
+        {
+          "plantName": "اسم النبات بالعربية",
+          "diseaseName": "اسم المرض أو الآفة بالعربية",
+          "diseaseType": "نوع الإصابة (فطري/بكتيري/حشري/نقص عناصر/فيروسي)",
+          "confidence": 0.85,
+          "symptoms": ["عرض 1", "عرض 2", "عرض 3"],
+          "treatmentPlan": {
+            "activeIngredient": "المادة الفعالة الموصى بها",
+            "usageMethod": "طريقة الاستخدام والتطبيق",
+            "dosage": "الجرعة لكل لتر ماء"
+          },
+          "timing": {
+            "startTreatment": "وقت بدء العلاج",
+            "frequency": "عدد مرات الرش",
+            "interval": "الفترة بين كل رشة"
+          },
+          "prevention": ["إجراء وقائي 1", "إجراء وقائي 2", "إجراء وقائي 3"]
+        }
       `;
 
+      const imageData = imageBase64.includes(",")
+        ? imageBase64.split(",")[1]
+        : imageBase64;
+
       const response = await ai.models.generateContent({
-        model,
+        model: "gemini-2.5-flash",
         contents: [
           {
+            role: "user",
             parts: [
               { text: prompt },
               {
                 inlineData: {
                   mimeType: "image/jpeg",
-                  data: imageBase64.split(",")[1] || imageBase64,
+                  data: imageData,
                 },
               },
             ],
           },
         ],
-        config: {
-          thinkingConfig: { thinkingBudget: 0 },
-          responseMimeType: "application/json",
-          responseSchema: {
-            type: Type.OBJECT,
-            properties: {
-              plantName: { type: Type.STRING },
-              diseaseName: { type: Type.STRING },
-              diseaseType: { type: Type.STRING },
-              confidence: { type: Type.NUMBER },
-              symptoms: { type: Type.ARRAY, items: { type: Type.STRING } },
-              treatmentPlan: {
-                type: Type.OBJECT,
-                properties: {
-                  activeIngredient: { type: Type.STRING },
-                  usageMethod: { type: Type.STRING },
-                  dosage: { type: Type.STRING },
-                },
-                required: ["activeIngredient", "usageMethod", "dosage"],
-              },
-              timing: {
-                type: Type.OBJECT,
-                properties: {
-                  startTreatment: { type: Type.STRING },
-                  frequency: { type: Type.STRING },
-                  interval: { type: Type.STRING },
-                },
-                required: ["startTreatment", "frequency", "interval"],
-              },
-              prevention: { type: Type.ARRAY, items: { type: Type.STRING } },
-            },
-            required: ["plantName", "diseaseName", "diseaseType", "confidence", "symptoms", "treatmentPlan", "timing", "prevention"],
-          },
-        },
       });
 
-      const result = JSON.parse(response.text || "{}");
+      const text = response.text || "";
+      // Extract JSON from response (handle markdown code blocks)
+      const jsonMatch = text.match(/```json\s*([\s\S]*?)\s*```/) ||
+                        text.match(/```\s*([\s\S]*?)\s*```/) ||
+                        [null, text];
+      const jsonText = jsonMatch[1] || text;
+      const result = JSON.parse(jsonText.trim());
       return res.json(result);
     } catch (err: any) {
       console.error("Diagnosis error:", err);
