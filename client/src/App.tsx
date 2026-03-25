@@ -29,20 +29,7 @@ interface HistoryItem extends DiagnosisResult {
 
 const Logo = ({ className = "w-10 h-10" }: { className?: string }) => (
   <div className={`relative flex items-center justify-center ${className}`}>
-    <div className="absolute inset-0 bg-green-500/15 blur-xl rounded-full" />
-    <svg viewBox="0 0 100 100" className="w-full h-full relative z-10 drop-shadow-md">
-      <path d="M46 72 L54 72 L56 92 L44 92 Z" fill="#14532d" />
-      <circle cx="50" cy="35" r="22" fill="#16a34a" />
-      <circle cx="35" cy="52" r="18" fill="#15803d" />
-      <circle cx="65" cy="52" r="18" fill="#15803d" />
-      <circle cx="50" cy="55" r="20" fill="#22c55e" />
-      <g transform="translate(50, 48)">
-        <circle cx="0" cy="0" r="11" fill="white" stroke="#064e3b" strokeWidth="2.5" />
-        <circle cx="0" cy="0" r="8.5" fill="#f0fdf4" />
-        <path d="M7.5 7.5 L15 15" stroke="#064e3b" strokeWidth="3.5" strokeLinecap="round" />
-        <path d="M-4 -3 Q-3 -5 -1 -4" stroke="#22c55e" strokeWidth="1.2" strokeLinecap="round" opacity="0.6" />
-      </g>
-    </svg>
+    <img src="/logo.png" alt="وقاية" className="w-full h-full object-contain drop-shadow-md" />
   </div>
 );
 
