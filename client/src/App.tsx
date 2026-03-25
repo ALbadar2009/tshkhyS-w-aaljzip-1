@@ -266,7 +266,7 @@ export default function App() {
                 <div className="grid grid-cols-3 gap-4">
                   {[
                     { icon: Camera, label: "التقط صورة", desc: "بكاميرا هاتفك" },
-                    { icon: Zap, label: "تحليل فوري", desc: "بالذكاء الاصطناعي" },
+                    { icon: Zap, label: "تحليل فوري", desc: "دقة تصل 99%" },
                     { icon: CheckCircle2, label: "خطة علاج", desc: "مخصصة وفورية" },
                   ].map((item, i) => (
                     <div key={i} className="text-center space-y-2">
