@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Camera, History, AlertCircle, CheckCircle2, RefreshCw, ChevronLeft, Info, Share2, Droplets, Scale, Zap, Image as ImageIcon, Sprout } from "lucide-react";
+import { Camera, History, AlertCircle, CheckCircle2, RefreshCw, ChevronLeft, Info, Share2, Droplets, Scale, Zap, Image as ImageIcon, Sprout, ScanSearch, FlaskConical, FileText, Sparkles } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export interface DiagnosisResult {
@@ -68,9 +68,28 @@ export default function App() {
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const [view, setView] = useState<"main" | "history" | "result" | "designer_message">("main");
   const [showUploadOptions, setShowUploadOptions] = useState(false);
+  const [loadingStep, setLoadingStep] = useState(0);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
+
+  const LOADING_STEPS = [
+    { icon: ScanSearch, label: "جاري فحص الصورة", desc: "نتعرف على النبات وتفاصيل الإصابة" },
+    { icon: FlaskConical, label: "تحليل الأعراض", desc: "نفحص الأعراض ونحدد نوع الإصابة بدقة" },
+    { icon: FileText, label: "إعداد خطة العلاج", desc: "نختار أفضل المواد الفعالة والجرعات" },
+    { icon: Sparkles, label: "مراجعة التقرير النهائي", desc: "لمسات أخيرة قبل عرض النتائج" },
+  ];
+
+  useEffect(() => {
+    if (!loading) { setLoadingStep(0); return; }
+    setLoadingStep(0);
+    const timers = [
+      setTimeout(() => setLoadingStep(1), 4000),
+      setTimeout(() => setLoadingStep(2), 9000),
+      setTimeout(() => setLoadingStep(3), 14000),
+    ];
+    return () => timers.forEach(clearTimeout);
+  }, [loading]);
 
   useEffect(() => {
     const savedHistory = localStorage.getItem("wiqaya_history");
@@ -656,25 +675,132 @@ export default function App() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 backdrop-blur-sm z-50 flex flex-col items-center justify-center p-6 text-center"
-            style={{ backgroundColor: "rgba(245,245,240,0.85)" }}
+            className="fixed inset-0 backdrop-blur-md z-50 flex flex-col items-center justify-center p-6"
+            style={{ backgroundColor: "rgba(245,245,240,0.92)" }}
           >
-            <div className="relative">
-              <motion.div
-                animate={{ rotate: 360 }}
-                transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                className="w-24 h-24 rounded-full border-4"
-                style={{ borderColor: "rgba(90,90,64,0.12)", borderTopColor: "#5A5A40" }}
-              />
-              <div className="absolute inset-0 flex items-center justify-center p-4">
-                <Logo className="w-full h-full opacity-40" />
+            <div className="w-full max-w-sm space-y-8">
+              {/* Logo + spinner */}
+              <div className="flex flex-col items-center gap-4">
+                <div className="relative">
+                  <motion.div
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 2.5, repeat: Infinity, ease: "linear" }}
+                    className="w-20 h-20 rounded-full border-4"
+                    style={{ borderColor: "rgba(90,90,64,0.10)", borderTopColor: "#5A5A40" }}
+                  />
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <Logo className="w-10 h-10 opacity-60" />
+                  </div>
+                </div>
+                <div className="text-center space-y-1">
+                  <AnimatePresence mode="wait">
+                    <motion.h3
+                      key={loadingStep}
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -8 }}
+                      transition={{ duration: 0.35 }}
+                      className="text-xl font-black display"
+                      style={{ color: "#1a1a1a" }}
+                    >
+                      {LOADING_STEPS[loadingStep].label}
+                    </motion.h3>
+                  </AnimatePresence>
+                  <AnimatePresence mode="wait">
+                    <motion.p
+                      key={`desc-${loadingStep}`}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.35, delay: 0.1 }}
+                      className="text-sm opacity-50"
+                      style={{ color: "#1a1a1a" }}
+                    >
+                      {LOADING_STEPS[loadingStep].desc}
+                    </motion.p>
+                  </AnimatePresence>
+                </div>
               </div>
-            </div>
-            <div className="mt-8 space-y-2">
-              <h3 className="text-xl font-bold serif" style={{ color: "#1a1a1a" }}>جاري تحليل الصورة...</h3>
-              <p className="text-sm opacity-50 max-w-xs" style={{ color: "#1a1a1a" }}>
-                نقوم الآن بالفحص وتحديد الأعراض بدقة.
-              </p>
+
+              {/* Step indicators */}
+              <div className="space-y-3">
+                {LOADING_STEPS.map((step, i) => {
+                  const Icon = step.icon;
+                  const isDone = i < loadingStep;
+                  const isActive = i === loadingStep;
+                  return (
+                    <motion.div
+                      key={i}
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: i * 0.07 }}
+                      className="flex items-center gap-4 rounded-2xl px-5 py-3.5 border transition-all duration-500"
+                      style={{
+                        backgroundColor: isActive
+                          ? "rgba(90,90,64,0.08)"
+                          : isDone
+                          ? "rgba(90,90,64,0.04)"
+                          : "rgba(255,255,255,0.5)",
+                        borderColor: isActive
+                          ? "rgba(90,90,64,0.20)"
+                          : isDone
+                          ? "rgba(90,90,64,0.10)"
+                          : "rgba(90,90,64,0.06)",
+                      }}
+                    >
+                      <div
+                        className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 transition-all duration-500"
+                        style={{
+                          backgroundColor: isDone
+                            ? "#5A5A40"
+                            : isActive
+                            ? "rgba(90,90,64,0.12)"
+                            : "rgba(90,90,64,0.05)",
+                          color: isDone ? "white" : isActive ? "#5A5A40" : "rgba(90,90,64,0.3)",
+                        }}
+                      >
+                        {isDone ? <CheckCircle2 size={18} /> : <Icon size={18} />}
+                      </div>
+                      <span
+                        className="text-sm font-bold transition-all duration-500"
+                        style={{
+                          color: isActive ? "#1a1a1a" : isDone ? "#5A5A40" : "rgba(26,26,26,0.35)",
+                        }}
+                      >
+                        {step.label}
+                      </span>
+                      {isActive && (
+                        <motion.div
+                          className="mr-auto flex gap-1"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                        >
+                          {[0, 1, 2].map((dot) => (
+                            <motion.div
+                              key={dot}
+                              animate={{ opacity: [0.3, 1, 0.3] }}
+                              transition={{ duration: 1.2, repeat: Infinity, delay: dot * 0.2 }}
+                              className="w-1.5 h-1.5 rounded-full"
+                              style={{ backgroundColor: "#5A5A40" }}
+                            />
+                          ))}
+                        </motion.div>
+                      )}
+                    </motion.div>
+                  );
+                })}
+              </div>
+
+              {/* Progress bar */}
+              <div className="h-1 rounded-full overflow-hidden" style={{ backgroundColor: "rgba(90,90,64,0.10)" }}>
+                <motion.div
+                  className="h-full rounded-full"
+                  style={{ backgroundColor: "#5A5A40" }}
+                  initial={{ width: "5%" }}
+                  animate={{ width: `${((loadingStep + 1) / LOADING_STEPS.length) * 90 + 5}%` }}
+                  transition={{ duration: 0.6, ease: "easeOut" }}
+                />
+              </div>
             </div>
           </motion.div>
         )}
