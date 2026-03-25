@@ -19,6 +19,7 @@ build = ["npm", "run", "build"]
 
 [agent]
 integrations = ["javascript_gemini_ai_integrations:2.0.0"]
+expertMode = true
 
 [workflows]
 runButton = "Project"
