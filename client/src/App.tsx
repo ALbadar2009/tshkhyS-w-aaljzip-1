@@ -196,10 +196,10 @@ export default function App() {
       <header className="p-6 md:p-8 flex justify-between items-center max-w-4xl mx-auto relative z-10">
         <div className="flex items-center gap-3 cursor-pointer group" onClick={reset}>
           <motion.div whileHover={{ rotate: 15 }} className="flex items-center justify-center">
-            <Logo className="w-12 h-12 md:w-14 md:h-14" />
+            <Logo className="w-16 h-16 md:w-20 md:h-20" />
           </motion.div>
           <div className="flex flex-col">
-            <h1 className="text-2xl md:text-3xl font-bold display tracking-tight leading-none" style={{ color: "#1a1a1a" }}>تشخيص وعلاج</h1>
+            <h1 className="text-2xl md:text-3xl font-bold display tracking-tight leading-none" style={{ color: "#1a1a1a" }}>وقاية</h1>
             <span className="text-[10px] uppercase tracking-[0.2em] font-bold opacity-60" style={{ color: "#5A5A40" }}>ذكاء زراعي</span>
             <button
               onClick={(e) => { e.stopPropagation(); setView("designer_message"); }}
