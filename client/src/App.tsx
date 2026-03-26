@@ -33,11 +33,11 @@ const Logo = ({ className = "w-10 h-10" }: { className?: string }) => (
   </div>
 );
 
-async function diagnosePlant(imageBase64: string): Promise<DiagnosisResult> {
+async function diagnosePlant(imageBase64: string, plantHint?: string): Promise<DiagnosisResult> {
   const response = await fetch("/api/diagnose", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ imageBase64 }),
+    body: JSON.stringify({ imageBase64, plantHint: plantHint?.trim() || "" }),
   });
   if (!response.ok) {
     const err = await response.json().catch(() => ({}));
@@ -56,6 +56,7 @@ export default function App() {
   const [view, setView] = useState<"main" | "history" | "result" | "designer_message">("main");
   const [showUploadOptions, setShowUploadOptions] = useState(false);
   const [loadingStep, setLoadingStep] = useState(0);
+  const [plantNameInput, setPlantNameInput] = useState("");
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
@@ -132,7 +133,7 @@ export default function App() {
     setLoading(true);
     setError(null);
     try {
-      const diagnosis = await diagnosePlant(imgBase64);
+      const diagnosis = await diagnosePlant(imgBase64, plantNameInput);
       setResult(diagnosis);
       saveToHistory(diagnosis, imgBase64);
       setView("result");
@@ -149,6 +150,7 @@ export default function App() {
     setError(null);
     setView("main");
     setShowUploadOptions(false);
+    setPlantNameInput("");
   };
 
   const handleShare = async () => {
@@ -354,6 +356,27 @@ export default function App() {
                             <AlertCircle size={24} />
                           </button>
                         </div>
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-xs font-bold opacity-50 block text-right" style={{ color: "#5A5A40" }}>
+                          اسم النبات أو الشجرة (اختياري — يُحسّن دقة التشخيص)
+                        </label>
+                        <input
+                          type="text"
+                          value={plantNameInput}
+                          onChange={(e) => setPlantNameInput(e.target.value)}
+                          placeholder="مثال: مانجو، طماطم، نخيل، زيتون..."
+                          dir="rtl"
+                          data-testid="input-plant-name"
+                          className="w-full px-4 py-3 rounded-2xl border text-sm font-medium outline-none transition-all"
+                          style={{
+                            backgroundColor: "rgba(255,255,255,0.8)",
+                            borderColor: "rgba(90,90,64,0.20)",
+                            color: "#1a1a1a",
+                          }}
+                          onFocus={(e) => (e.target.style.borderColor = "#5A5A40")}
+                          onBlur={(e) => (e.target.style.borderColor = "rgba(90,90,64,0.20)")}
+                        />
                       </div>
                       <button
                         onClick={() => image && processImage(image)}
