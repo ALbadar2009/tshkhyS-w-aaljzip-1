@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Camera, History, AlertCircle, CheckCircle2, RefreshCw, ChevronLeft, Info, Share2, Droplets, Scale, Zap, Image as ImageIcon, Sprout, ScanSearch, FlaskConical, FileText, Sparkles, MessageCircleHeart } from "lucide-react";
+import { Camera, History, AlertCircle, CheckCircle2, RefreshCw, ChevronLeft, Info, Share2, Droplets, Scale, Zap, Image as ImageIcon, Sprout, ScanSearch, FlaskConical, FileText, Sparkles, Mail } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export interface DiagnosisResult {
@@ -215,7 +215,7 @@ export default function App() {
               }}
               data-testid="button-designer-message"
             >
-              <MessageCircleHeart size={14} />
+              <Mail size={14} />
               <span>رسالة تهمك</span>
             </motion.button>
           </div>
