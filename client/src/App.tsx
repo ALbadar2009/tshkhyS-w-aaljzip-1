@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Camera, History, AlertCircle, CheckCircle2, RefreshCw, ChevronLeft, Info, Share2, Droplets, Scale, Zap, Image as ImageIcon, Sprout, ScanSearch, FlaskConical, FileText, Sparkles } from "lucide-react";
+import { Camera, History, AlertCircle, CheckCircle2, RefreshCw, ChevronLeft, Info, Share2, Droplets, Scale, Zap, Image as ImageIcon, Sprout, ScanSearch, FlaskConical, FileText, Sparkles, MessageCircleHeart } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export interface DiagnosisResult {
@@ -203,15 +203,21 @@ export default function App() {
           <div className="flex flex-col">
             <h1 className="text-2xl md:text-3xl font-bold display tracking-tight leading-none" style={{ color: "#1a1a1a" }}>وقاية</h1>
             <span className="text-[10px] uppercase tracking-[0.2em] font-bold opacity-60" style={{ color: "#5A5A40" }}>ذكاء زراعي</span>
-            <button
+            <motion.button
               onClick={(e) => { e.stopPropagation(); setView("designer_message"); }}
-              className="mt-1 text-xs font-bold hover:opacity-100 transition-opacity flex items-center gap-1 opacity-50"
-              style={{ color: "#5A5A40" }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.97 }}
+              className="mt-2 flex items-center gap-1.5 px-3 py-1.5 rounded-full font-bold text-xs shadow-sm transition-all"
+              style={{
+                backgroundColor: "rgba(212,163,115,0.15)",
+                color: "#b07d3a",
+                border: "1px solid rgba(212,163,115,0.35)",
+              }}
               data-testid="button-designer-message"
             >
-              <Info size={12} />
+              <MessageCircleHeart size={14} />
               <span>رسالة تهمك</span>
-            </button>
+            </motion.button>
           </div>
         </div>
         <div className="flex flex-col items-center gap-1">
