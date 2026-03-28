@@ -1,7 +1,8 @@
 {
   "version": 2,
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "dist/index.cjs" },
-    { "source": "/(.*)", "destination": "dist/public/$1" }
+    { "source": "/api/(.*)", "destination": "/dist/index.cjs" },
+    { "source": "/(.*)", "destination": "/dist/public/$1" }
   ]
 }
+ 
