@@ -3,7 +3,7 @@ import { createServer, type Server } from "http";
 import { GoogleGenAI } from "@google/genai";
 
 const ai = new GoogleGenAI({
-  apiKey: process.env.AI_INTEGRATIONS_GEMINI_API_KEY,
+  apiKey: process.env.GEMINI_API_KEY,
   httpOptions: {
     apiVersion: "",
   },
@@ -36,7 +36,7 @@ ${plantLine}
         : imageBase64;
 
       const response = await ai.models.generateContent({
-        model: "gemini-1.5-pro",
+        model: "gemini-1.5-flash",
         contents: [
           {
             role: "user",
