@@ -2,13 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { GoogleGenAI } from "@google/genai";
 
-const ai = new GoogleGenAI({
-  apiKey: process.env.GEMINI_API_KEY,
-  httpOptions: {
-    apiVersion: "",
-  },
-});
-
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 export async function registerRoutes(
   httpServer: Server,
   app: Express
