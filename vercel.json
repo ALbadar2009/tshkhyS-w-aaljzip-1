@@ -1,7 +1,10 @@
 {
   "version": 2,
   "functions": {
-    "dist/index.cjs": { "runtime": "vercel-node@latest" }
+    "dist/index.cjs": {
+      "memory": 1024,
+      "maxDuration": 10
+    }
   },
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/dist/index.cjs" },
