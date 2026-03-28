@@ -2,8 +2,7 @@
   "version": 2,
   "functions": {
     "dist/index.cjs": {
-      "memory": 1024,
-      "maxDuration": 10
+      "runtime": "nodejs20.x"
     }
   },
   "rewrites": [
