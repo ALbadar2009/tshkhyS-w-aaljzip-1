@@ -37,7 +37,7 @@ ${plantLine}
         : imageBase64;
 
       const response = await ai.models.generateContent({
-        model: "gemini-2.5-pro",
+        model: "gemini-1.5-pro",
         contents: [
           {
             role: "user",
